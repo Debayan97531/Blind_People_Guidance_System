@@ -28,7 +28,7 @@ def ego_roi(frame_2, name, box_coord, DIST_H_per_FRAME):
     y_up    = y_lane_third  
     y_low   = y_lane_third  +   y_lane_pad
 
-    # frame_2, coords_in_roi, distance_in_roi =  object_in_roi(frame_2, name, box_coord, x_1_low, x_2_low, y_up, y_low, DIST_H_per_FRAME)
+    frame_2, coords_in_roi, distance_in_roi =  object_in_roi(frame_2, name, box_coord, x_1_low, x_2_low, y_up, y_low, DIST_H_per_FRAME)
 
     coords_in_roi = box_coord
     distance_in_roi = DIST_H_per_FRAME

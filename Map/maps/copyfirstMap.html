@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Update a feature in realtime</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+ 
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoiYXl1c2htYW5rdW1hcjciLCJhIjoiY2t3NWRramh1MGQ1dDJucmhwdGYzdHlpbyJ9.tWMaBeHehFHHKPkadZ56bw';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/satellite-v9',
+        zoom: 1.5
+    });
+ 
+	map.on('load', async () => {
+        // Get the initial location of the International Space Station (ISS).
+        const geojson = await getLocation();
+        // Add the ISS location as a source.
+        map.addSource('iss', {
+            type: 'geojson',
+            data: geojson
+        });
+
+        map.addLayer({
+            'id': 'iss',
+            'type': 'circle',
+            'source': 'iss',
+            'paint': {
+                'circle-radius': 6,
+                'circle-color': '#ff0000'
+            }
+        });
+
+        // Update the source from the API every 2 seconds.
+        const updateSource = setInterval(async () => {
+            const geojson = await getLocation(updateSource);
+            map.getSource('iss').setData(geojson);
+        }, 10);
+
+        async function getLocation(updateSource) {
+            // Make a GET request to the API and return the location of the ISS.
+            try {
+                const response = await fetch(
+                    'http://192.168.0.100:5000/',
+                    { method: 'GET' }
+                );
+				// console.log(await response.json());
+                const res = await response.json();
+				latitude = res[1]
+				longitude = res[0]
+				console.log(latitude, longitude);
+                // Fly the map to the location.
+				map.panTo([longitude, latitude]);
+                map.flyTo({
+                    center: [longitude, latitude],
+                    speed: 3, 
+					zoom: 18
+                });
+                // Return the location of the ISS as GeoJSON.
+                return {
+                    'type': 'FeatureCollection',
+                    'features': [
+                        {
+                            'type': 'Feature',
+                            'geometry': {
+                                'type': 'Point',
+                                'coordinates': [longitude, latitude]
+                            }
+                        }
+                    ]
+                };
+            } catch (err) {
+                // If the updateSource interval is defined, clear the interval to stop updating the source.
+                if (updateSource) clearInterval(updateSource);
+                throw new Error(err);
+            }
+        }
+    });
+</script>
+ 
+</body>
+</html>

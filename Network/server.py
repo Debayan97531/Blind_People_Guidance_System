@@ -1,5 +1,6 @@
 import socket
 import pickle
+import cv2
 
 # create socket and listen for incoming connections
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -16,11 +17,12 @@ while True:
         break
     data_bytes += chunk
 
-# deserialize dictionary using pickle
-data = pickle.loads(data_bytes)
+    # deserialize dictionary using pickle
+    data = pickle.loads(data_bytes)
 
-# print received data
-print(data)
+    # print received data
+    print(data)
+    cv2.imshow("frame", data['image'])
 
 # close connection and socket
 conn.close()
