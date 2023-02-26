@@ -14,7 +14,8 @@
 
 import requests
 import random
-
+import time
+import numpy as np
 count = 1
 lat = 87
 lon = 22
@@ -31,7 +32,8 @@ while True:
     lon_diff = random.uniform(-max_distance, max_distance)
     
     # update the coordinates
-    lat += 10
-    lon += lon_diff
+    lat += lat_diff/1000
+    lon += lon_diff/1000
     print(f"final gnss : {lat}, {lon}")
-    requests.post(f"http://192.168.0.100:5000/update/{lat}/{lon}", data = None)
+    requests.post(f"http://127.0.0.1:5000/update/{lon}/{lat}", data = None)
+    time.sleep(1)
