@@ -18,8 +18,6 @@ We have created our own server architecture system where one of our laptop is th
 - Torch
 - pyttsx3
 
-## Installation
-- Clone the repository: git clone https://github.com/Maaitrayo/Blind-People-Guidance-System
 ## Features
 * Object detection: Our project uses YOLOv5 for object detection, which can identify various objects in the blind person's environment and help them navigate accordingly.
 
